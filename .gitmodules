@@ -1,0 +1,6 @@
+[submodule "gpu-compute/vendor/vk-bootstrap"]
+	path = gpu-compute/vendor/vk-bootstrap
+	url = https://github.com/charles-lunarg/vk-bootstrap
+[submodule "gpu-compute/vendor/fmt"]
+	path = gpu-compute/vendor/fmt
+	url = https://github.com/fmtlib/fmt
