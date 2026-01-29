@@ -5,6 +5,9 @@
 add_executable(${PROJECT_NAME} 
 	main.cpp 
 
+	engine/pandora/pandora.cpp
+	engine/garbage_collector/garbage_collector.cpp
+
 	# Second triangle
 	# second-triangle/second-triangle.cpp
 	# second-triangle/vk-engine.cpp
