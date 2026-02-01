@@ -34,6 +34,25 @@ void Pandora::Init() {
                                            .set_required_features_12(features12)
                                            .select()
                                            .value();
+
+  vkb::DeviceBuilder deviceBuilder{physicalDevice};
+  auto deviceBuilderRet = deviceBuilder.build();
+
+  device = deviceBuilderRet.value();
+  choosenPhysicalDevice = physicalDevice.physical_device;
+
+  graphicsQueue = device.get_queue(vkb::QueueType::graphics).value();
+  graphicsQueueFamily =
+      device.get_queue_index(vkb::QueueType::graphics).value();
+
+  VmaAllocatorCreateInfo allocatorInfo = {};
+  allocatorInfo.physicalDevice = choosenPhysicalDevice;
+  allocatorInfo.device = device;
+  allocatorInfo.instance = instance;
+  allocatorInfo.flags = VMA_ALLOCATOR_CREATE_BUFFER_DEVICE_ADDRESS_BIT;
+  vmaCreateAllocator(&allocatorInfo, &allocator);
+
+  garbageCollector.AddFunction([&]() { vmaDestroyAllocator(allocator); });
 }
 
 void Pandora::Cleanup() { garbageCollector.Flush(); }

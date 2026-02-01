@@ -6,6 +6,7 @@ add_executable(${PROJECT_NAME}
 	main.cpp 
 
 	engine/pandora/pandora.cpp
+	engine/vma_usage.cpp
 	engine/garbage_collector/garbage_collector.cpp
 
 	# Second triangle
@@ -14,7 +15,6 @@ add_executable(${PROJECT_NAME}
 	# second-triangle/vk-initializer.cpp
 	# second-triangle/vk-image.cpp
 	# second-triangle/deletion-queue.cpp
-	# second-triangle/vma-usage.cpp
 	# second-triangle/vk-descriptors.cpp
 	# second-triangle/vk-pipelines.cpp
 
