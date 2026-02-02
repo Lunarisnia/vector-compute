@@ -3,6 +3,13 @@
 #include "fmt/base.h"
 
 void Pandora::Init() {
+  initInstance();
+  initDescriptor();
+}
+
+void Pandora::Cleanup() { garbageCollector.Flush(); }
+
+void Pandora::initInstance() {
   vkb::InstanceBuilder builder;
 
   vkb::Result<vkb::Instance> instanceRet = builder.use_default_debug_messenger()
@@ -55,4 +62,32 @@ void Pandora::Init() {
   garbageCollector.AddFunction([&]() { vmaDestroyAllocator(allocator); });
 }
 
-void Pandora::Cleanup() { garbageCollector.Flush(); }
+void Pandora::initDescriptor() {
+  // VkDescriptorPoolSize pool_size = {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 2};
+  //
+  // VkDescriptorPoolCreateInfo pool_info = {};
+  // pool_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+  // pool_info.flags = 0;
+  // pool_info.maxSets = 1;
+  // pool_info.poolSizeCount = 1;
+  // pool_info.pPoolSizes = &pool_size;
+  // init.disp.createDescriptorPool(&pool_info, nullptr, &data.descriptor_pool);
+  //
+  // VkDescriptorSetLayoutBinding binding = {0,
+  // VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+  //                                         2, VK_SHADER_STAGE_ALL, nullptr};
+  // VkDescriptorSetLayoutCreateInfo dsl_info = {};
+  // dsl_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+  // dsl_info.flags = 0;
+  // dsl_info.bindingCount = 1;
+  // dsl_info.pBindings = &binding;
+  // init.disp.createDescriptorSetLayout(&dsl_info, nullptr,
+  //                                     &data.descriptor_set_layout);
+  //
+  // VkDescriptorSetAllocateInfo ds_allocate_info = {};
+  // ds_allocate_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+  // ds_allocate_info.descriptorPool = data.descriptor_pool;
+  // ds_allocate_info.descriptorSetCount = 1;
+  // ds_allocate_info.pSetLayouts = &data.descriptor_set_layout;
+  // init.disp.allocateDescriptorSets(&ds_allocate_info, &data.descriptor_set);
+}

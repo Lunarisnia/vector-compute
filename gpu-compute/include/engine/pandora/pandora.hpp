@@ -17,7 +17,8 @@ private:
   VmaAllocator allocator;
 
 private:
-  void initDevice();
+  void initInstance();
+  void initDescriptor();
 
 public:
   void Init();
