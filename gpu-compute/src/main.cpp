@@ -1,2 +1,7 @@
-#include "fmt/base.h"
-int main() { fmt::println("Hello, WOrld"); }
+#include "engine/engine.hpp"
+
+int main() {
+  Engine engine;
+  engine.Init();
+  engine.Run();
+}

@@ -5,13 +5,10 @@ class VKToolkit {
 public:
   static VkDescriptorPoolCreateInfo
   DescriptorPoolCreateInfo(int maxSets, int poolSizeCount,
-                           VkDescriptorPoolSize poolSize, unsigned int flags);
+                           VkDescriptorPoolSize *poolSize,
+                           unsigned int flags = 0);
+  static VkDescriptorSetLayoutCreateInfo
+  DescriptorSetLayoutCreateInfo(int bindingCount,
+                                VkDescriptorSetLayoutBinding *binding,
+                                unsigned int flags = 0);
 };
-
-// VkDescriptorPoolCreateInfo pool_info = {};
-// pool_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-// pool_info.flags = 0;
-// pool_info.maxSets = 1;
-// pool_info.poolSizeCount = 1;
-// pool_info.pPoolSizes = &pool_size;
-// init.disp.createDescriptorPool(&pool_info, nullptr, &data.descriptor_pool);

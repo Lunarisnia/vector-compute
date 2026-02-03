@@ -5,9 +5,11 @@
 add_executable(${PROJECT_NAME} 
 	main.cpp 
 
+	engine/engine.cpp
 	engine/pandora/pandora.cpp
 	engine/vma_usage.cpp
 	engine/garbage_collector/garbage_collector.cpp
+	engine/vk_toolkit/vk_toolkit.cpp
 
 	# Second triangle
 	# second-triangle/second-triangle.cpp

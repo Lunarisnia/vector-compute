@@ -1,6 +1,8 @@
 #include "engine/pandora/pandora.hpp"
 #include "VkBootstrap.h"
+#include "engine/vk_toolkit/vk_toolkit.hpp"
 #include "fmt/base.h"
+#include <vulkan/vulkan_core.h>
 
 void Pandora::Init() {
   initInstance();
@@ -63,19 +65,24 @@ void Pandora::initInstance() {
 }
 
 void Pandora::initDescriptor() {
-  // VkDescriptorPoolSize pool_size = {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 2};
-  //
-  // VkDescriptorPoolCreateInfo pool_info = {};
-  // pool_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-  // pool_info.flags = 0;
-  // pool_info.maxSets = 1;
-  // pool_info.poolSizeCount = 1;
-  // pool_info.pPoolSizes = &pool_size;
-  // init.disp.createDescriptorPool(&pool_info, nullptr, &data.descriptor_pool);
-  //
-  // VkDescriptorSetLayoutBinding binding = {0,
-  // VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-  //                                         2, VK_SHADER_STAGE_ALL, nullptr};
+  VkDescriptorPoolSize poolSize = {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 2};
+  VkDescriptorPoolCreateInfo descriptorPoolCreateInfo =
+      VKToolkit::DescriptorPoolCreateInfo(1, 1, &poolSize);
+  vkCreateDescriptorPool(device, &descriptorPoolCreateInfo, nullptr,
+                         &descriptorPool);
+  garbageCollector.AddFunction(
+      [&]() { vkDestroyDescriptorPool(device, descriptorPool, nullptr); });
+
+  VkDescriptorSetLayoutBinding binding = {0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+                                          2, VK_SHADER_STAGE_ALL, nullptr};
+  VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo =
+      VKToolkit::DescriptorSetLayoutCreateInfo(1, &binding);
+  vkCreateDescriptorSetLayout(device, &descriptorSetLayoutCreateInfo, nullptr,
+                              &descriptorSetLayout);
+  garbageCollector.AddFunction([&]() {
+    vkDestroyDescriptorSetLayout(device, descriptorSetLayout, nullptr);
+  });
+
   // VkDescriptorSetLayoutCreateInfo dsl_info = {};
   // dsl_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
   // dsl_info.flags = 0;

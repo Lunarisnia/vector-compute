@@ -16,6 +16,9 @@ private:
 
   VmaAllocator allocator;
 
+  VkDescriptorPool descriptorPool;
+  VkDescriptorSetLayout descriptorSetLayout;
+
 private:
   void initInstance();
   void initDescriptor();
