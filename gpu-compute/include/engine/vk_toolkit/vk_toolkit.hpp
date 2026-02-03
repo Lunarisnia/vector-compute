@@ -11,4 +11,8 @@ public:
   DescriptorSetLayoutCreateInfo(int bindingCount,
                                 VkDescriptorSetLayoutBinding *binding,
                                 unsigned int flags = 0);
+  static VkDescriptorSetAllocateInfo
+  DescriptorSetAllocateInfo(int descriptorSetCount,
+                            VkDescriptorSetLayout *descriptorSetLayout,
+                            VkDescriptorPool descriptorPool);
 };

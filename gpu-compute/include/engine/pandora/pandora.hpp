@@ -18,6 +18,7 @@ private:
 
   VkDescriptorPool descriptorPool;
   VkDescriptorSetLayout descriptorSetLayout;
+  VkDescriptorSet descriptorSet;
 
 private:
   void initInstance();

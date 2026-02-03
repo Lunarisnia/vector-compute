@@ -65,6 +65,7 @@ void Pandora::initInstance() {
 }
 
 void Pandora::initDescriptor() {
+  // Create Descriptor pool to store the input data
   VkDescriptorPoolSize poolSize = {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 2};
   VkDescriptorPoolCreateInfo descriptorPoolCreateInfo =
       VKToolkit::DescriptorPoolCreateInfo(1, 1, &poolSize);
@@ -73,6 +74,8 @@ void Pandora::initDescriptor() {
   garbageCollector.AddFunction(
       [&]() { vkDestroyDescriptorPool(device, descriptorPool, nullptr); });
 
+  // Create the layout for storing the input in this case (a + b) input a and
+  // input b
   VkDescriptorSetLayoutBinding binding = {0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
                                           2, VK_SHADER_STAGE_ALL, nullptr};
   VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo =
@@ -83,18 +86,9 @@ void Pandora::initDescriptor() {
     vkDestroyDescriptorSetLayout(device, descriptorSetLayout, nullptr);
   });
 
-  // VkDescriptorSetLayoutCreateInfo dsl_info = {};
-  // dsl_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-  // dsl_info.flags = 0;
-  // dsl_info.bindingCount = 1;
-  // dsl_info.pBindings = &binding;
-  // init.disp.createDescriptorSetLayout(&dsl_info, nullptr,
-  //                                     &data.descriptor_set_layout);
-  //
-  // VkDescriptorSetAllocateInfo ds_allocate_info = {};
-  // ds_allocate_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-  // ds_allocate_info.descriptorPool = data.descriptor_pool;
-  // ds_allocate_info.descriptorSetCount = 1;
-  // ds_allocate_info.pSetLayouts = &data.descriptor_set_layout;
-  // init.disp.allocateDescriptorSets(&ds_allocate_info, &data.descriptor_set);
+  // Allocate the layout to the pool
+  VkDescriptorSetAllocateInfo allocateInfo =
+      VKToolkit::DescriptorSetAllocateInfo(1, &descriptorSetLayout,
+                                           descriptorPool);
+  vkAllocateDescriptorSets(device, &allocateInfo, &descriptorSet);
 }
