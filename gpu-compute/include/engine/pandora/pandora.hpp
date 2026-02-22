@@ -23,13 +23,18 @@ private:
   VkPipelineLayout calculationPipelineLayout;
   VkPipeline calculationPipeline;
 
+  VkCommandPool commandPool;
+  VkCommandBuffer commandBuffer;
+
 private:
   void initInstance();
   void initDescriptor();
   void initPipeline();
+  void initCommands();
 
 public:
   void Init();
+  void Dispatch(uint32_t x, uint32_t y, uint32_t z);
 
   void Cleanup();
 };

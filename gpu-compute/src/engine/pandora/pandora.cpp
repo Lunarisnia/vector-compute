@@ -4,12 +4,32 @@
 #include "engine/shaders/file_path.hpp"
 #include "engine/vk_toolkit/vk_toolkit.hpp"
 #include "fmt/base.h"
+#include <cstdint>
 #include <vulkan/vulkan_core.h>
 
 void Pandora::Init() {
   initInstance();
   initDescriptor();
   initPipeline();
+  initCommands();
+}
+
+void Pandora::Dispatch(uint32_t x, uint32_t y, uint32_t z) {
+  // reset command buffer
+  vkResetCommandBuffer(commandBuffer, 0);
+
+  auto beginInfo = VKToolkit::CommandBufferBeginInfo();
+  vkBeginCommandBuffer(commandBuffer, &beginInfo);
+
+  // RECORDING START
+  // RECORDING END
+
+  vkEndCommandBuffer(commandBuffer);
+  auto commandSubmitInfo = VKToolkit::CommandBufferSubmitInfo(commandBuffer);
+  auto submitInfo =
+      VKToolkit::SubmitInfo2(&commandSubmitInfo, nullptr, nullptr);
+  vkQueueSubmit2(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
+  vkQueueWaitIdle(graphicsQueue);
 }
 
 void Pandora::Cleanup() { garbageCollector.Flush(); }
@@ -131,4 +151,17 @@ void Pandora::initPipeline() {
     vkDestroyPipelineLayout(device, calculationPipelineLayout, nullptr);
     vkDestroyPipeline(device, calculationPipeline, nullptr);
   });
+}
+
+void Pandora::initCommands() {
+  auto commandPoolInfo = VKToolkit::CommandPoolCreateInfo(
+      graphicsQueueFamily, VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
+  vkCreateCommandPool(device, &commandPoolInfo, nullptr, &commandPool);
+
+  auto commandBufferAllocateInfo =
+      VKToolkit::CommandBufferAllocateInfo(commandPool);
+  vkAllocateCommandBuffers(device, &commandBufferAllocateInfo, &commandBuffer);
+
+  garbageCollector.AddFunction(
+      [&]() { vkDestroyCommandPool(device, commandPool, nullptr); });
 }

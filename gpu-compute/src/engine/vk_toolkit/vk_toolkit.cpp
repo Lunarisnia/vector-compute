@@ -91,3 +91,63 @@ VKToolkit::ComputePipelineCreateInfo(VkPipelineLayout pipelineLayout,
   computePipelineCreateInfo.stage = stage;
   return computePipelineCreateInfo;
 }
+
+VkCommandPoolCreateInfo
+VKToolkit::CommandPoolCreateInfo(uint32_t queueFamilyIndex,
+                                 unsigned int flags) {
+  VkCommandPoolCreateInfo createInfo{};
+  createInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+  createInfo.pNext = nullptr;
+  createInfo.flags = flags;
+  createInfo.queueFamilyIndex = queueFamilyIndex;
+  return createInfo;
+}
+
+VkCommandBufferAllocateInfo
+VKToolkit::CommandBufferAllocateInfo(VkCommandPool commandPool,
+                                     unsigned int flags) {
+  VkCommandBufferAllocateInfo createInfo{};
+  createInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+  createInfo.pNext = nullptr;
+  createInfo.commandPool = commandPool;
+  createInfo.commandBufferCount = 1; // For now
+  createInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+  return createInfo;
+}
+
+VkCommandBufferBeginInfo VKToolkit::CommandBufferBeginInfo(unsigned int flags) {
+  VkCommandBufferBeginInfo beginInfo{};
+  beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+  beginInfo.flags = flags;
+  beginInfo.pInheritanceInfo = nullptr;
+  beginInfo.pNext = nullptr;
+  return beginInfo;
+}
+
+VkSubmitInfo2 VKToolkit::SubmitInfo2(VkCommandBufferSubmitInfo *cmd,
+                                     VkSemaphoreSubmitInfo *signalSemaphoreInfo,
+                                     VkSemaphoreSubmitInfo *waitSemaphoreInfo) {
+  VkSubmitInfo2 info{};
+  info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO_2;
+  info.pNext = nullptr;
+
+  info.waitSemaphoreInfoCount = waitSemaphoreInfo == nullptr ? 0 : 1;
+  info.pWaitSemaphoreInfos = waitSemaphoreInfo;
+
+  info.signalSemaphoreInfoCount = signalSemaphoreInfo == nullptr ? 0 : 1;
+  info.pSignalSemaphoreInfos = signalSemaphoreInfo;
+
+  info.commandBufferInfoCount = 1;
+  info.pCommandBufferInfos = cmd;
+  return info;
+}
+
+VkCommandBufferSubmitInfo
+VKToolkit::CommandBufferSubmitInfo(VkCommandBuffer commandBuffer) {
+  VkCommandBufferSubmitInfo submitInfo{};
+  submitInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_SUBMIT_INFO;
+  submitInfo.pNext = nullptr;
+  submitInfo.commandBuffer = commandBuffer;
+  submitInfo.deviceMask = 0;
+  return submitInfo;
+}

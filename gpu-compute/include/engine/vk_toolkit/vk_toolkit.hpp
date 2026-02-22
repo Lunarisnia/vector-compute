@@ -31,4 +31,15 @@ public:
   static VkPipelineShaderStageCreateInfo PipelineShaderStageCreateInfo(
       VkShaderModule shaderModule, VkShaderStageFlagBits stage,
       const std::string &pName, unsigned int flags = 0);
+  static VkCommandPoolCreateInfo
+  CommandPoolCreateInfo(uint32_t queueFamilyIndex, unsigned int flags = 0);
+  static VkCommandBufferAllocateInfo
+  CommandBufferAllocateInfo(VkCommandPool commandPool, unsigned int flags = 0);
+  static VkCommandBufferBeginInfo
+  CommandBufferBeginInfo(unsigned int flags = 0);
+  static VkSubmitInfo2 SubmitInfo2(VkCommandBufferSubmitInfo *cmd,
+                                   VkSemaphoreSubmitInfo *signalSemaphoreInfo,
+                                   VkSemaphoreSubmitInfo *waitSemaphoreInfo);
+  static VkCommandBufferSubmitInfo
+  CommandBufferSubmitInfo(VkCommandBuffer commandBuffer);
 };
