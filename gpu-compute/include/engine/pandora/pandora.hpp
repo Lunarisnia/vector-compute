@@ -23,6 +23,7 @@ private:
 private:
   void initInstance();
   void initDescriptor();
+  void initPipeline();
 
 public:
   void Init();

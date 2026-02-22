@@ -28,7 +28,7 @@ void Pandora::initInstance() {
   // vulkan 1.3 features
   VkPhysicalDeviceVulkan13Features features{
       .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES};
-  // features.dynamicRendering = true;
+  features.dynamicRendering = true;
   features.synchronization2 = true;
 
   // vulkan 1.2 features
@@ -66,7 +66,7 @@ void Pandora::initInstance() {
 
 void Pandora::initDescriptor() {
   // Create Descriptor pool to store the input data
-  VkDescriptorPoolSize poolSize = {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 2};
+  VkDescriptorPoolSize poolSize = {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 4};
   VkDescriptorPoolCreateInfo descriptorPoolCreateInfo =
       VKToolkit::DescriptorPoolCreateInfo(1, 1, &poolSize);
   vkCreateDescriptorPool(device, &descriptorPoolCreateInfo, nullptr,
@@ -77,7 +77,7 @@ void Pandora::initDescriptor() {
   // Create the layout for storing the input in this case (a + b) input a and
   // input b
   VkDescriptorSetLayoutBinding binding = {0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-                                          2, VK_SHADER_STAGE_ALL, nullptr};
+                                          4, VK_SHADER_STAGE_ALL, nullptr};
   VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo =
       VKToolkit::DescriptorSetLayoutCreateInfo(1, &binding);
   vkCreateDescriptorSetLayout(device, &descriptorSetLayoutCreateInfo, nullptr,
@@ -91,4 +91,9 @@ void Pandora::initDescriptor() {
       VKToolkit::DescriptorSetAllocateInfo(1, &descriptorSetLayout,
                                            descriptorPool);
   vkAllocateDescriptorSets(device, &allocateInfo, &descriptorSet);
+}
+
+void Pandora::initPipeline() {
+  // 1. Load compiled shader
+  // 2. Create shader module
 }
