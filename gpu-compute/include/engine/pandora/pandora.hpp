@@ -20,6 +20,9 @@ private:
   VkDescriptorSetLayout descriptorSetLayout;
   VkDescriptorSet descriptorSet;
 
+  VkPipelineLayout calculationPipelineLayout;
+  VkPipeline calculationPipeline;
+
 private:
   void initInstance();
   void initDescriptor();

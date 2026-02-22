@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cstdint>
+#include <string>
+#include <vector>
 #include <vulkan/vulkan_core.h>
 class VKToolkit {
 public:
@@ -15,4 +18,17 @@ public:
   DescriptorSetAllocateInfo(int descriptorSetCount,
                             VkDescriptorSetLayout *descriptorSetLayout,
                             VkDescriptorPool descriptorPool);
+  static VkShaderModuleCreateInfo
+  ShaderModuleCreateInfo(std::vector<uint32_t> &codeBuffer,
+                         unsigned int flags = 0);
+  static VkPipelineLayoutCreateInfo
+  PipelineLayoutCreateInfo(VkDescriptorSetLayout *descriptorSetLayout,
+                           unsigned int flags = 0);
+  static VkComputePipelineCreateInfo
+  ComputePipelineCreateInfo(VkPipelineLayout pipelineLayout,
+                            VkPipelineShaderStageCreateInfo stage,
+                            unsigned int flags = 0);
+  static VkPipelineShaderStageCreateInfo PipelineShaderStageCreateInfo(
+      VkShaderModule shaderModule, VkShaderStageFlagBits stage,
+      const std::string &pName, unsigned int flags = 0);
 };

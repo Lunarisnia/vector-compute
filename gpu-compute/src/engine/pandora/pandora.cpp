@@ -4,7 +4,6 @@
 #include "engine/shaders/file_path.hpp"
 #include "engine/vk_toolkit/vk_toolkit.hpp"
 #include "fmt/base.h"
-#include <iostream>
 #include <vulkan/vulkan_core.h>
 
 void Pandora::Init() {
@@ -98,8 +97,38 @@ void Pandora::initDescriptor() {
 }
 
 void Pandora::initPipeline() {
-  // 1. Load compiled shader
+  // Create pipeline layout with descriptor set
+  auto computeLayout =
+      VKToolkit::PipelineLayoutCreateInfo(&descriptorSetLayout);
+  vkCreatePipelineLayout(device, &computeLayout, nullptr,
+                         &calculationPipelineLayout);
+
+  // Load compiled shader
   auto buffer =
-      FileLoader::LoadBinaryFile(FilePath::InWorkdir("shaders/test.frag.spv"));
-  // 2. Create shader module
+      FileLoader::LoadBinaryFile(FilePath::InWorkdir("shaders/test.comp.spv"));
+  // Create shader module
+  VkShaderModuleCreateInfo shaderModuleCreateInfo =
+      VKToolkit::ShaderModuleCreateInfo(buffer);
+
+  VkShaderModule computeShaderModule;
+  vkCreateShaderModule(device, &shaderModuleCreateInfo, nullptr,
+                       &computeShaderModule);
+
+  // Create shader stage
+  auto computeShaderStage = VKToolkit::PipelineShaderStageCreateInfo(
+      computeShaderModule, VK_SHADER_STAGE_COMPUTE_BIT, "main");
+
+  // Create compute pipeline
+  auto computePipelineCreateInfo = VKToolkit::ComputePipelineCreateInfo(
+      calculationPipelineLayout, computeShaderStage);
+  vkCreateComputePipelines(device, VK_NULL_HANDLE, 1,
+                           &computePipelineCreateInfo, nullptr,
+                           &calculationPipeline);
+
+  // Shader module is not needed anymore after the creation of the pipeline
+  vkDestroyShaderModule(device, computeShaderModule, nullptr);
+  garbageCollector.AddFunction([&]() {
+    vkDestroyPipelineLayout(device, calculationPipelineLayout, nullptr);
+    vkDestroyPipeline(device, calculationPipeline, nullptr);
+  });
 }
