@@ -22,6 +22,13 @@ void Pandora::Dispatch(uint32_t x, uint32_t y, uint32_t z) {
   vkBeginCommandBuffer(commandBuffer, &beginInfo);
 
   // RECORDING START
+  vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
+                    calculationPipeline);
+  vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
+                          calculationPipelineLayout, 0, 1, &descriptorSet, 0,
+                          nullptr);
+
+  vkCmdDispatch(commandBuffer, x, y, z);
   // RECORDING END
 
   vkEndCommandBuffer(commandBuffer);
