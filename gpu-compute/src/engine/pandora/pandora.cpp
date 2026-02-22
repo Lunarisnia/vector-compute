@@ -1,12 +1,16 @@
 #include "engine/pandora/pandora.hpp"
 #include "VkBootstrap.h"
+#include "engine/shaders/file_loader.hpp"
+#include "engine/shaders/file_path.hpp"
 #include "engine/vk_toolkit/vk_toolkit.hpp"
 #include "fmt/base.h"
+#include <iostream>
 #include <vulkan/vulkan_core.h>
 
 void Pandora::Init() {
   initInstance();
   initDescriptor();
+  initPipeline();
 }
 
 void Pandora::Cleanup() { garbageCollector.Flush(); }
@@ -95,5 +99,7 @@ void Pandora::initDescriptor() {
 
 void Pandora::initPipeline() {
   // 1. Load compiled shader
+  auto buffer =
+      FileLoader::LoadBinaryFile(FilePath::InWorkdir("shaders/test.frag.spv"));
   // 2. Create shader module
 }

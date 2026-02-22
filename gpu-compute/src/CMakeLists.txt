@@ -11,14 +11,8 @@ add_executable(${PROJECT_NAME}
 	engine/garbage_collector/garbage_collector.cpp
 	engine/vk_toolkit/vk_toolkit.cpp
 
-	# Second triangle
-	# second-triangle/second-triangle.cpp
-	# second-triangle/vk-engine.cpp
-	# second-triangle/vk-initializer.cpp
-	# second-triangle/vk-image.cpp
-	# second-triangle/deletion-queue.cpp
-	# second-triangle/vk-descriptors.cpp
-	# second-triangle/vk-pipelines.cpp
+	engine/shaders/file_loader.cpp
+	engine/shaders/file_path.cpp
 
 	# core/shader/shader.cpp
 
