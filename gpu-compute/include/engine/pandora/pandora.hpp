@@ -26,14 +26,18 @@ private:
   VkCommandPool commandPool;
   VkCommandBuffer commandBuffer;
 
+  unsigned long bufferSize;
+  VkBuffer storageBuffers[3];
+
 private:
   void initInstance();
   void initDescriptor();
+  void initBuffers();
   void initPipeline();
   void initCommands();
 
 public:
-  void Init();
+  void Init(unsigned long bufferSize);
   void Dispatch(uint32_t x, uint32_t y, uint32_t z);
 
   void Cleanup();

@@ -4,12 +4,16 @@
 #include "engine/shaders/file_path.hpp"
 #include "engine/vk_toolkit/vk_toolkit.hpp"
 #include "fmt/base.h"
+#include <cstddef>
 #include <cstdint>
 #include <vulkan/vulkan_core.h>
 
-void Pandora::Init() {
+void Pandora::Init(unsigned long bufferSize) {
+  this->bufferSize = bufferSize;
+
   initInstance();
   initDescriptor();
+  initBuffers();
   initPipeline();
   initCommands();
 }
@@ -171,4 +175,24 @@ void Pandora::initCommands() {
 
   garbageCollector.AddFunction(
       [&]() { vkDestroyCommandPool(device, commandPool, nullptr); });
+}
+
+void Pandora::initBuffers() {
+  VmaAllocationCreateInfo allocInfo = {};
+  allocInfo.usage = VMA_MEMORY_USAGE_AUTO;
+
+  for (size_t i = 0; i < 3; i++) {
+    VkBufferCreateInfo bufferInfo{};
+    bufferInfo.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
+    bufferInfo.size = bufferSize;
+
+    VkBuffer buffer;
+    VmaAllocation allocation;
+    vmaCreateBuffer(allocator, &bufferInfo, &allocInfo, &buffer, &allocation,
+                    nullptr);
+    // vkUpdateDescriptorSets(device, 3,
+    //                        const VkWriteDescriptorSet *pDescriptorWrites,
+    //                        uint32_t descriptorCopyCount,
+    //                        const VkCopyDescriptorSet *pDescriptorCopies)
+  }
 }
