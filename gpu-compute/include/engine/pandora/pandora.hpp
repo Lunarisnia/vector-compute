@@ -28,6 +28,7 @@ private:
 
   unsigned long bufferSize;
   VkBuffer storageBuffers[3];
+  VmaAllocation storageAllocations[3];
 
 private:
   void initInstance();

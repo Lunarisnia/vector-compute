@@ -42,4 +42,14 @@ public:
                                    VkSemaphoreSubmitInfo *waitSemaphoreInfo);
   static VkCommandBufferSubmitInfo
   CommandBufferSubmitInfo(VkCommandBuffer commandBuffer);
+
+  static VkDescriptorBufferInfo DescriptorBufferInfo(VkBuffer buffer,
+                                                     VkDeviceSize offset,
+                                                     VkDeviceSize range);
+
+  static VkWriteDescriptorSet
+  WriteDescriptorSet(VkDescriptorSet descriptorSet,
+                     VkDescriptorBufferInfo *bufferInfo, uint32_t binding);
+
+  static VkDescriptorSetLayoutBinding DescriptorSetLayoutBinding();
 };

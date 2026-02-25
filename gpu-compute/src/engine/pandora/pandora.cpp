@@ -111,9 +111,9 @@ void Pandora::initDescriptor() {
   // Create the layout for storing the input in this case (a + b) input a and
   // input b
   VkDescriptorSetLayoutBinding binding = {0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-                                          4, VK_SHADER_STAGE_ALL, nullptr};
+                                          1, VK_SHADER_STAGE_ALL, nullptr};
   VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo =
-      VKToolkit::DescriptorSetLayoutCreateInfo(1, &binding);
+      VKToolkit::DescriptorSetLayoutCreateInfo(3, &binding);
   vkCreateDescriptorSetLayout(device, &descriptorSetLayoutCreateInfo, nullptr,
                               &descriptorSetLayout);
   garbageCollector.AddFunction([&]() {
@@ -183,16 +183,25 @@ void Pandora::initBuffers() {
 
   for (size_t i = 0; i < 3; i++) {
     VkBufferCreateInfo bufferInfo{};
+    bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
     bufferInfo.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
     bufferInfo.size = bufferSize;
 
-    VkBuffer buffer;
-    VmaAllocation allocation;
-    vmaCreateBuffer(allocator, &bufferInfo, &allocInfo, &buffer, &allocation,
-                    nullptr);
-    // vkUpdateDescriptorSets(device, 3,
-    //                        const VkWriteDescriptorSet *pDescriptorWrites,
-    //                        uint32_t descriptorCopyCount,
-    //                        const VkCopyDescriptorSet *pDescriptorCopies)
+    vmaCreateBuffer(allocator, &bufferInfo, &allocInfo, &storageBuffers[i],
+                    &storageAllocations[i], nullptr);
+    // TODO: add garbage collector
+    auto descriptorBufferInfo =
+        VKToolkit::DescriptorBufferInfo(storageBuffers[i], 0, VK_WHOLE_SIZE);
+    auto writeDescriptorSet =
+        VKToolkit::WriteDescriptorSet(descriptorSet, &descriptorBufferInfo, i);
+
+    vkUpdateDescriptorSets(device, 1, &writeDescriptorSet, 0, nullptr);
   }
+  garbageCollector.AddFunction([&]() {
+    for (size_t i = 0; i < 3; i++) {
+      vmaDestroyBuffer(allocator, storageBuffers[i], storageAllocations[i]);
+    }
+  });
 }
+
+// TODO: copy the actual value in dispatch

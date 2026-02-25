@@ -24,7 +24,7 @@ VKToolkit::DescriptorSetLayoutCreateInfo(int bindingCount,
   VkDescriptorSetLayoutCreateInfo createInfo = {};
   createInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
   createInfo.flags = 0;
-  createInfo.bindingCount = 1;
+  createInfo.bindingCount = bindingCount;
   createInfo.pBindings = binding;
   return createInfo;
 }
@@ -150,4 +150,39 @@ VKToolkit::CommandBufferSubmitInfo(VkCommandBuffer commandBuffer) {
   submitInfo.commandBuffer = commandBuffer;
   submitInfo.deviceMask = 0;
   return submitInfo;
+}
+
+VkDescriptorBufferInfo VKToolkit::DescriptorBufferInfo(VkBuffer buffer,
+                                                       VkDeviceSize offset,
+                                                       VkDeviceSize range) {
+  VkDescriptorBufferInfo bufferInfo{};
+  bufferInfo.buffer = buffer;
+  bufferInfo.offset = offset;
+  bufferInfo.range = range;
+  return bufferInfo;
+}
+
+VkWriteDescriptorSet
+VKToolkit::WriteDescriptorSet(VkDescriptorSet descriptorSet,
+                              VkDescriptorBufferInfo *bufferInfo,
+                              uint32_t binding) {
+  VkWriteDescriptorSet write{};
+  write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+  write.dstSet = descriptorSet;
+  write.dstBinding = binding;
+  write.descriptorCount = 1;
+  write.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+  write.pBufferInfo = bufferInfo;
+  return write;
+}
+
+VkDescriptorSetLayoutBinding VKToolkit::DescriptorSetLayoutBinding() {
+  VkDescriptorSetLayoutBinding layoutBinding{};
+  // layoutBinding.binding = 0;
+  // layoutBinding.descriptorType = 0;
+  // layoutBinding.descriptorCount = 0;
+  // layoutBinding.stageFlags = 0;
+  // layoutBinding.pImmutableSamplers = nullptr;
+
+  return layoutBinding;
 }

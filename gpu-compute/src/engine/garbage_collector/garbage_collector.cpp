@@ -1,5 +1,4 @@
 #include "engine/garbage_collector/garbage_collector.hpp"
-#include <cstdint>
 #include <functional>
 
 void GarbageCollector::AddFunction(std::function<void()> deletionFunc) {
@@ -7,7 +6,7 @@ void GarbageCollector::AddFunction(std::function<void()> deletionFunc) {
 }
 
 void GarbageCollector::Flush() {
-  for (uint32_t i = 0; i < deletionQueue.size(); i++) {
+  for (int i = deletionQueue.size() - 1; i >= 0; i--) {
     deletionQueue[i]();
   }
   deletionQueue.clear();
