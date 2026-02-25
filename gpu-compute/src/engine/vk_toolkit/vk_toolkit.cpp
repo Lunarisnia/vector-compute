@@ -176,13 +176,15 @@ VKToolkit::WriteDescriptorSet(VkDescriptorSet descriptorSet,
   return write;
 }
 
-VkDescriptorSetLayoutBinding VKToolkit::DescriptorSetLayoutBinding() {
+VkDescriptorSetLayoutBinding VKToolkit::DescriptorSetLayoutBinding(
+    uint32_t binding, VkDescriptorType descriptorType, uint32_t descriptorCount,
+    VkShaderStageFlags stageFlags) {
   VkDescriptorSetLayoutBinding layoutBinding{};
-  // layoutBinding.binding = 0;
-  // layoutBinding.descriptorType = 0;
-  // layoutBinding.descriptorCount = 0;
-  // layoutBinding.stageFlags = 0;
-  // layoutBinding.pImmutableSamplers = nullptr;
+  layoutBinding.binding = binding;
+  layoutBinding.descriptorType = descriptorType;
+  layoutBinding.descriptorCount = descriptorCount;
+  layoutBinding.stageFlags = stageFlags;
+  layoutBinding.pImmutableSamplers = nullptr;
 
   return layoutBinding;
 }

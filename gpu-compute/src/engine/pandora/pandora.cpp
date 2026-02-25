@@ -110,10 +110,18 @@ void Pandora::initDescriptor() {
 
   // Create the layout for storing the input in this case (a + b) input a and
   // input b
-  VkDescriptorSetLayoutBinding binding = {0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-                                          1, VK_SHADER_STAGE_ALL, nullptr};
+  VkDescriptorSetLayoutBinding bindings[3] = {
+      VKToolkit::DescriptorSetLayoutBinding(
+          0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1, VK_SHADER_STAGE_COMPUTE_BIT),
+      VKToolkit::DescriptorSetLayoutBinding(
+          1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1, VK_SHADER_STAGE_COMPUTE_BIT),
+      VKToolkit::DescriptorSetLayoutBinding(
+          2, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1, VK_SHADER_STAGE_COMPUTE_BIT),
+  };
+  // = {0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+  //                                   1, VK_SHADER_STAGE_ALL, nullptr};
   VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo =
-      VKToolkit::DescriptorSetLayoutCreateInfo(3, &binding);
+      VKToolkit::DescriptorSetLayoutCreateInfo(3, bindings);
   vkCreateDescriptorSetLayout(device, &descriptorSetLayoutCreateInfo, nullptr,
                               &descriptorSetLayout);
   garbageCollector.AddFunction([&]() {

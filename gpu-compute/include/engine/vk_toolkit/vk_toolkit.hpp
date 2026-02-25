@@ -51,5 +51,8 @@ public:
   WriteDescriptorSet(VkDescriptorSet descriptorSet,
                      VkDescriptorBufferInfo *bufferInfo, uint32_t binding);
 
-  static VkDescriptorSetLayoutBinding DescriptorSetLayoutBinding();
+  static VkDescriptorSetLayoutBinding
+  DescriptorSetLayoutBinding(uint32_t binding, VkDescriptorType descriptorType,
+                             uint32_t descriptorCount,
+                             VkShaderStageFlags stageFlags);
 };
