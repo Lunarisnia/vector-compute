@@ -136,9 +136,16 @@ void Pandora::initDescriptor() {
 }
 
 void Pandora::initPipeline() {
+  VkPushConstantRange pushRange{};
+  pushRange.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+  pushRange.offset = 0;
+  pushRange.size = sizeof(int); // b is an int
+
   // Create pipeline layout with descriptor set
   auto computeLayout =
       VKToolkit::PipelineLayoutCreateInfo(&descriptorSetLayout);
+  computeLayout.pushConstantRangeCount = 1;
+  computeLayout.pPushConstantRanges = &pushRange;
   vkCreatePipelineLayout(device, &computeLayout, nullptr,
                          &calculationPipelineLayout);
 
