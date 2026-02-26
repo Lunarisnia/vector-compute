@@ -3,6 +3,7 @@
 #include "engine/garbage_collector/garbage_collector.hpp"
 #include "vk_mem_alloc.h"
 #include <cstdint>
+#include <vector>
 #include <vulkan/vulkan_core.h>
 class Pandora {
 private:
@@ -30,6 +31,8 @@ private:
   VkBuffer storageBuffers[3];
   VmaAllocation storageAllocations[3];
 
+  int b;
+
 private:
   void initInstance();
   void initDescriptor();
@@ -39,6 +42,8 @@ private:
 
 public:
   void Init(unsigned long bufferSize);
+  void Upload(int b);
+  std::vector<float> Download();
   void Dispatch(uint32_t x, uint32_t y, uint32_t z);
 
   void Cleanup();

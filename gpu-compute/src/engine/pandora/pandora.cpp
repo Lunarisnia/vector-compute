@@ -4,8 +4,10 @@
 #include "engine/shaders/file_path.hpp"
 #include "engine/vk_toolkit/vk_toolkit.hpp"
 #include "fmt/base.h"
+#include "vk_mem_alloc.h"
 #include <cstddef>
 #include <cstdint>
+#include <vector>
 #include <vulkan/vulkan_core.h>
 
 void Pandora::Init(unsigned long bufferSize) {
@@ -16,6 +18,15 @@ void Pandora::Init(unsigned long bufferSize) {
   initBuffers();
   initPipeline();
   initCommands();
+}
+
+void Pandora::Upload(int b) { this->b = b; }
+
+std::vector<float> Pandora::Download() {
+  std::vector<float> result(bufferSize / sizeof(float));
+  vmaCopyAllocationToMemory(allocator, storageAllocations[2], 0, result.data(),
+                            bufferSize);
+  return result;
 }
 
 void Pandora::Dispatch(uint32_t x, uint32_t y, uint32_t z) {
@@ -31,6 +42,8 @@ void Pandora::Dispatch(uint32_t x, uint32_t y, uint32_t z) {
   vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
                           calculationPipelineLayout, 0, 1, &descriptorSet, 0,
                           nullptr);
+  vkCmdPushConstants(commandBuffer, calculationPipelineLayout,
+                     VK_SHADER_STAGE_COMPUTE_BIT, 0, sizeof(int), &b);
 
   vkCmdDispatch(commandBuffer, x, y, z);
   // RECORDING END
@@ -195,6 +208,10 @@ void Pandora::initCommands() {
 void Pandora::initBuffers() {
   VmaAllocationCreateInfo allocInfo = {};
   allocInfo.usage = VMA_MEMORY_USAGE_AUTO;
+  allocInfo.flags =
+      VMA_ALLOCATION_CREATE_HOST_ACCESS_ALLOW_TRANSFER_INSTEAD_BIT |
+      VMA_ALLOCATION_CREATE_HOST_ACCESS_RANDOM_BIT;
+  // VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT;
 
   for (size_t i = 0; i < 3; i++) {
     VkBufferCreateInfo bufferInfo{};
