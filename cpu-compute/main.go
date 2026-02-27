@@ -26,7 +26,7 @@ func main() {
 	for i := range arrayA {
 		result = append(result, (arrayA[i]*multiplier)+arrayB[i])
 	}
-	fmt.Println(result)
 	timeDifference := time.Since(startTime)
-	fmt.Println("Calculation took:", timeDifference.Seconds())
+	fmt.Println(result)
+	fmt.Println("Calculation took:", timeDifference.Milliseconds())
 }

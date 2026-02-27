@@ -42,8 +42,8 @@ private:
 
 public:
   void Init(unsigned long bufferSize);
-  void Upload(int b);
-  std::vector<float> Download();
+  void Upload(std::vector<int> a, int b, std::vector<int> c);
+  std::vector<int> Download();
   void Dispatch(uint32_t x, uint32_t y, uint32_t z);
 
   void Cleanup();

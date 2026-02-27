@@ -1,14 +1,26 @@
 #version 460
-layout(local_size_x = 512) in;
+layout(local_size_x = 1) in;
+// layout(local_size_x = 512) in; // NOTE: this is a good example for how small things can tank performance
+
+// 1. Dispatch is 512x over (biggest issue)
+//
+//  In engine.cpp:31:
+//  pandora.Dispatch(ELEMENT_COUNT, 1, 1); // 30,000,000 work groups
+//
+//  But your shader sets local_size_x = 512. vkCmdDispatch takes work group counts, not thread counts. So you're actually launching:
+//
+//  30,000,000 work groups × 512 threads = 15,360,000,000 invocations
+//
+//  ...instead of the ~58,594 you need. The GPU is doing 512x more work than intended, with most invocations accessing out-of-bounds memory.
 
 layout(set = 0, binding = 0) readonly buffer BufferA {
-    float a[];
+    int a[];
 };
 layout(set = 0, binding = 1) readonly buffer BufferC {
-    float c[];
+    int c[];
 };
 layout(set = 0, binding = 2) writeonly buffer BufferOut {
-    float result[];
+    int result[];
 };
 
 layout(push_constant) uniform PushConstants {
@@ -17,6 +29,6 @@ layout(push_constant) uniform PushConstants {
 
 void main() {
     uint idx = gl_GlobalInvocationID.x;
-    // result[idx] = (a[idx] + float(pc.b)) * c[idx];
-    result[idx] = float(pc.b);
+    result[idx] = (a[idx] + pc.b) * c[idx];
+    // result[idx] = float(pc.b) + a[idx] + c[idx];
 }

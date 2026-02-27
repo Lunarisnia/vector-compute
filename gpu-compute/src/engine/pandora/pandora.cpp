@@ -20,10 +20,16 @@ void Pandora::Init(unsigned long bufferSize) {
   initCommands();
 }
 
-void Pandora::Upload(int b) { this->b = b; }
+void Pandora::Upload(std::vector<int> a, int b, std::vector<int> c) {
+  this->b = b;
+  vmaCopyMemoryToAllocation(allocator, a.data(), storageAllocations[0], 0,
+                            bufferSize);
+  vmaCopyMemoryToAllocation(allocator, c.data(), storageAllocations[1], 0,
+                            bufferSize);
+}
 
-std::vector<float> Pandora::Download() {
-  std::vector<float> result(bufferSize / sizeof(float));
+std::vector<int> Pandora::Download() {
+  std::vector<int> result(bufferSize / sizeof(int));
   vmaCopyAllocationToMemory(allocator, storageAllocations[2], 0, result.data(),
                             bufferSize);
   return result;
