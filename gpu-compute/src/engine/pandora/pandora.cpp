@@ -206,12 +206,17 @@ void Pandora::initCommands() {
 }
 
 void Pandora::initBuffers() {
-  VmaAllocationCreateInfo allocInfo = {};
-  allocInfo.usage = VMA_MEMORY_USAGE_AUTO;
-  allocInfo.flags =
-      VMA_ALLOCATION_CREATE_HOST_ACCESS_ALLOW_TRANSFER_INSTEAD_BIT |
-      VMA_ALLOCATION_CREATE_HOST_ACCESS_RANDOM_BIT;
-  // VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT;
+  VmaAllocationCreateInfo allocInfos[3] = {
+      {VMA_ALLOCATION_CREATE_HOST_ACCESS_ALLOW_TRANSFER_INSTEAD_BIT |
+           VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT,
+       VMA_MEMORY_USAGE_AUTO},
+      {VMA_ALLOCATION_CREATE_HOST_ACCESS_ALLOW_TRANSFER_INSTEAD_BIT |
+           VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT,
+       VMA_MEMORY_USAGE_AUTO},
+      {VMA_ALLOCATION_CREATE_HOST_ACCESS_ALLOW_TRANSFER_INSTEAD_BIT |
+           VMA_ALLOCATION_CREATE_HOST_ACCESS_RANDOM_BIT,
+       VMA_MEMORY_USAGE_AUTO},
+  };
 
   for (size_t i = 0; i < 3; i++) {
     VkBufferCreateInfo bufferInfo{};
@@ -219,9 +224,8 @@ void Pandora::initBuffers() {
     bufferInfo.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
     bufferInfo.size = bufferSize;
 
-    vmaCreateBuffer(allocator, &bufferInfo, &allocInfo, &storageBuffers[i],
+    vmaCreateBuffer(allocator, &bufferInfo, &allocInfos[i], &storageBuffers[i],
                     &storageAllocations[i], nullptr);
-    // TODO: add garbage collector
     auto descriptorBufferInfo =
         VKToolkit::DescriptorBufferInfo(storageBuffers[i], 0, VK_WHOLE_SIZE);
     auto writeDescriptorSet =
@@ -235,5 +239,3 @@ void Pandora::initBuffers() {
     }
   });
 }
-
-// TODO: copy the actual value in dispatch
